@@ -1,0 +1,52 @@
+import pandas as pd
+import re
+
+# Function to clean and convert price values to lakhs
+def convert_price(price):
+    price = price.strip()
+    price = re.sub(r'[₹,]', '', price)  # Remove currency symbols and commas
+    if 'Lakh' in price:
+        value = re.sub(r'[^\d.]', '', price)
+        return float(value)
+    elif 'Crore' in price:
+        value = re.sub(r'[^\d.]', '', price)
+        return float(value) * 100  # 1 Crore = 100 Lakhs
+    elif re.match(r'^\d+$', price):  # If it's just a number (thousands)
+        return float(price) / 100  # Convert thousands to lakhs
+    else:
+        return None
+
+# Assuming df is your DataFrame and 'price' is the column with price values
+df['price_in_lakhs'] = df['price'].apply(convert_price)
+
+# Display the updated dataframe
+print(df[['price', 'price_in_lakhs']].head())
+
+
+
+
+import re
+
+# Function to clean and convert price values to lakhs
+def convert_price(price):
+    price = price.strip()
+    price = re.sub(r'[₹,]', '', price)  # Remove currency symbols and commas
+    if 'Lakh' in price:
+        value = re.sub(r'[^\d.]', '', price)
+        return float(value)
+    elif 'Crore' in price:
+        value = re.sub(r'[^\d.]', '', price)
+        return float(value) * 100  # 1 Crore = 100 Lakhs
+    elif re.match(r'^\d+(\.\d+)?$', price):  # If it's a pure number (thousands)
+        return float(price) / 100000  # Convert thousands to lakhs (e.g., 80,000 to 0.8)
+    else:
+        return None
+
+# Assuming df is your DataFrame and 'price' is the column with price values
+df['price_in_lakhs'] = df['price'].apply(convert_price)
+
+# Display the updated dataframe
+print(df[['price', 'price_in_lakhs']].tail())
+
+
+
